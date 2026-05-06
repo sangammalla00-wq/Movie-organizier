@@ -25,10 +25,6 @@ jobs:
             mingw-w64-ucrt-x86_64-gcc
             mingw-w64-ucrt-x86_64-gtk3
             mingw-w64-ucrt-x86_64-pkg-config
-
-      - name: Build Console Version
-        run: gcc -o movie_system.exe main.c movie_operations.c filehandler.c utils.c
-
       - name: Build GUI Version
         run: gcc -o movie_gui.exe gui.c movie_operations.c filehandler.c utils.c `pkg-config --cflags --libs gtk+-3.0`
 
