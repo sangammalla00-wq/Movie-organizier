@@ -1,0 +1,39 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-gtk3
+            mingw-w64-ucrt-x86_64-pkg-config
+
+      - name: Build Console Version
+        run: gcc -o movie_system.exe main.c movie_operations.c filehandler.c utils.c
+
+      - name: Build GUI Version
+        run: gcc -o movie_gui.exe gui.c movie_operations.c filehandler.c utils.c `pkg-config --cflags --libs gtk+-3.0`
+
+      - name: Upload Executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: movie-organizer-exe
+          path: "*.exe"
